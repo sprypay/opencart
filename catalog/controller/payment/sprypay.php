@@ -9,15 +9,28 @@ class ControllerPaymentSprypay extends Controller {
 	protected function index() {
         $this->load->library('sprypaylib/SprypayRequestPaymentForm');
 		$this->load->model('checkout/order');
+        $language = $this->language->get('code');
+         $order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+		$url='https://sprypay.ru/sppi/?spShopId='.$this->config->get('sprypay_shop').'
+									  &spShopPaymentId='.$order['order_id'].'
+									  &spAmount='.$this->currency->format($order['total'], $order['currency_code'], $order['currency_value'], false).'
+									  &spCurrency='.strtolower($order['currency_code']).'
+									  &spPurpose=Order # '.$order['order_id'];
 
-		$order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-		$this->model_checkout_order->confirm($order['order_id'], $this->config->get('sprypay_order_status_id'));
+
+
+		//$this->model_checkout_order->confirm($order['order_id'], $this->config->get('sprypay_order_status_id'));
         $requestPaymentForm = new SprypayRequestPaymentForm();
         $requestPaymentForm->setShopId($this->config->get('sprypay_shop'));
+
         $requestPaymentForm->setShopPaymentId($order['order_id']);
 		$requestPaymentForm->setAmount($this->currency->format($order['total'], $order['currency_code'], $order['currency_value'], false));
 		$requestPaymentForm->setCurrency(strtolower($order['currency_code']));
+
+		//if ($language == 'ru') $requestPaymentForm->setPurpose('Заказ № '. $order['order_id']);
+		//else
 		$requestPaymentForm->setPurpose('Order # ' . $order['order_id']);
+
 		$requestPaymentForm->setUserEmail($order['email']);
         $requestPaymentForm->setSubmitLabel($this->language->get('button_confirm'));
         $requestPaymentForm->disableAutoSubmit();
@@ -27,6 +40,29 @@ class ControllerPaymentSprypay extends Controller {
         if ($language != 'ru')
             $language = 'en';
         $requestPaymentForm->setLanguage($language);
+        $url.='&lang='.$language.'&src=1';
+
+		if( $this->config->get('sprypay_confirm_status')=='before' )
+		{
+             $comment = '';
+   			 if ($language == 'ru')
+             {
+				$comment = 'Ссылка для оплаты: '.$url;//$this->config->get('sprypay_confirm_comment')	;
+			 }
+   			 else{
+       			$comment = 'Link for payment: '.$url;//$this->config->get('sprypay_confirm_comment')	;
+   			 }
+
+
+			$comment = html_entity_decode($comment, ENT_QUOTES, 'UTF-8');
+
+			$this->model_checkout_order->confirm( $this->session->data['order_id'], $this->config->get('sprypay_preorder_status_id'),
+											    $comment, true); //$this->config->get('sprypay_confirm_notify') );
+		}
+		elseif($this->config->get('sprypay_confirm_status')=='after'  )
+		{
+			//$this->model_checkout_order->confirm($this->session->data['order_id'], $this->config->get('sprypay_order_status_id'));
+		}
 
         $this->data['request_payment_form'] = $requestPaymentForm->renderForm();
 
@@ -76,7 +112,15 @@ class ControllerPaymentSprypay extends Controller {
             die('Invalid control sum: '.$notificationData['hashString']);
 
         $message = 'Sprypay payment '.$notificationData['paymentId'].' ('.$notificationData['balanceAmount'].' '.$notificationData['balanceCurrency'].') was enrolled to sprypay balance in '.$notificationData['enrollDateTime'];
-        $this->model_checkout_order->update($orderId,$this->config->get('config_order_status_id'), $message, false);
+
+  		if( $this->config->get('sprypay_confirm_status')=='before' )
+		{			 $this->model_checkout_order->update($orderId,$this->config->get('sprypay_order_status_id'), $message, false);
+		}
+		elseif($this->config->get('sprypay_confirm_status')=='after'  )
+		{
+			$this->model_checkout_order->confirm($orderId, $this->config->get('sprypay_order_status_id'),$message,true);
+		}
+
         die($validator->confirmNotification());
     }
 }

@@ -30,8 +30,43 @@
               <span class="error"><?php echo $error_secret; ?></span>
               <?php } ?></td>
           </tr>
+           <tr>
+            <td><?php echo $entry_script; ?></td>
+            <td>
+				<p><input type="radio" name="sprypay_confirm_status"
+				value="before" id="sprypay_confirm_status_before"
+				<?php if( $sprypay_confirm_status == 'before' ) { ?> checked <?php } ?>
+				onclick="show_hide_block('before', 0)"
+				><label for="sprypay_confirm_status_before"><?php echo $entry_script_before; ?></label></p>
 
+				<p><input type="radio" name="sprypay_confirm_status"
+				value="after" id="sprypay_confirm_status_after"
+				<?php if( $sprypay_confirm_status == 'after' ) { ?> checked <?php } ?>
+				onclick="show_hide_block('after', 0)"
+				><label for="sprypay_confirm_status_after"
+				><?php echo $entry_script_after; ?></label></p>
 
+			</td>
+          </tr>
+                </table>
+          <table id="block_before" class="form" width=100%>
+		   <tr>
+            <td><?php echo $entry_preorder_status; ?></td>
+            <td><select name="sprypay_preorder_status_id">
+                <?php foreach ($order_statuses as $order_status) { ?>
+                <?php if ($order_status['order_status_id'] == $sprypay_preorder_status_id) { ?>
+                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
+                <?php } else { ?>
+                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
+                <?php } ?>
+                <?php } ?>
+              </select></td>
+          </tr>
+		  </table>
+
+		  <div id="block_after" ></div>
+
+           <table class="form">
           <tr>
             <td><?php echo $entry_order_status; ?></td>
             <td><select name="sprypay_order_status_id">
@@ -75,6 +110,28 @@
           </tr>
         </table>
       </form>
+      <script>
+      function show_hide_block(value)
+	{
+		if( value=='before' )
+		{
+			document.getElementById('block_before').style.display = 'block';
+			document.getElementById('block_after').style.display = 'none';
+
+		}
+		else if( value=='after' )
+		{
+			document.getElementById('block_before').style.display = 'none';
+			document.getElementById('block_after').style.display = 'block';
+		}
+
+	}
+
+	//alert(document.getElementById('sprypay_confirm_status').value);
+
+	show_hide_block( '<?php echo $sprypay_confirm_status; ?>', 0 );
+      </script>
+
     </div>
   </div>
 </div>

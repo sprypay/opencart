@@ -16,7 +16,14 @@ $_['entry_secret']       = 'Shop secret:';
 $_['entry_callback']     = 'IPN URL:<br /><span class="help">This has to be set in the Sprypay control panel.</span>';
 $_['entry_test']         = 'Test Mode:';
 $_['entry_total']        = 'Total:<br /><span class="help">The checkout total the order must reach before this payment method becomes active.</span>';
-$_['entry_order_status'] = 'Order Status:';
+$_['entry_order_status'] = 'Order Status after payment:';
+
+$_['entry_script']  = 'Script of checkout';
+$_['entry_preorder_status'] = 'Order Status after confirmation:';
+$_['entry_script_before']  = '<b>Before payment</b><br>Orders appear in the "Sales" => "orders" when a customer clicks on the "Confirm" button and BEFORE payment';
+
+$_['entry_script_after']  = '<b>After payment</b><br>Order will appear in "Sales" => "Orders" when customer pay his order in sprypay.ru';
+
 $_['entry_geo_zone']     = 'Geo Zone:';
 $_['entry_status']       = 'Status:';
 $_['entry_sort_order']   = 'Sort Order:';
