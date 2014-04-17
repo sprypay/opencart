@@ -9,6 +9,7 @@ $_['text_sprypay']       = '<a onclick="window.open(\'http://sprypay.ru\');"><im
 $_['text_successful']    = 'On - Always Successful';
 $_['text_declined']      = 'On - Always Declined';
 $_['text_off']           = 'Off';
+$_['text_order_comment'] = 'Link for payment: ';
 
 // Entry
 $_['entry_shop']         = 'Shop ID:';

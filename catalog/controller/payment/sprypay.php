@@ -10,14 +10,8 @@ class ControllerPaymentSprypay extends Controller {
         $this->load->library('sprypaylib/SprypayRequestPaymentForm');
 		$this->load->model('checkout/order');
         $language = $this->language->get('code');
-         $order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-		$url='https://sprypay.ru/sppi/?spShopId='.$this->config->get('sprypay_shop').'
-									  &spShopPaymentId='.$order['order_id'].'
-									  &spAmount='.$this->currency->format($order['total'], $order['currency_code'], $order['currency_value'], false).'
-									  &spCurrency='.strtolower($order['currency_code']).'
-									  &spPurpose=Order # '.$order['order_id'];
-
-
+        $order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+		$url='https://sprypay.ru/sppi/?spShopId='.$this->config->get('sprypay_shop').'&spShopPaymentId='.$order['order_id'].'&spAmount='.$this->currency->format($order['total'], $order['currency_code'], $order['currency_value'], false).'&spCurrency='.strtolower($order['currency_code']).'&spPurpose=Order # '.$order['order_id'];
 
 		//$this->model_checkout_order->confirm($order['order_id'], $this->config->get('sprypay_order_status_id'));
         $requestPaymentForm = new SprypayRequestPaymentForm();
@@ -27,9 +21,8 @@ class ControllerPaymentSprypay extends Controller {
 		$requestPaymentForm->setAmount($this->currency->format($order['total'], $order['currency_code'], $order['currency_value'], false));
 		$requestPaymentForm->setCurrency(strtolower($order['currency_code']));
 
-		//if ($language == 'ru') $requestPaymentForm->setPurpose('Çàêàç ¹ '. $order['order_id']);
-		//else
-		$requestPaymentForm->setPurpose('Order # ' . $order['order_id']);
+		if ($language == 'ru') $requestPaymentForm->setPurpose('Ð—Ð°ÐºÐ°Ð· â„– '. $order['order_id']);
+		else $requestPaymentForm->setPurpose('Order # ' . $order['order_id']);
 
 		$requestPaymentForm->setUserEmail($order['email']);
         $requestPaymentForm->setSubmitLabel($this->language->get('button_confirm'));
@@ -47,7 +40,7 @@ class ControllerPaymentSprypay extends Controller {
              $comment = '';
    			 if ($language == 'ru')
              {
-				$comment = 'Ññûëêà äëÿ îïëàòû: '.$url;//$this->config->get('sprypay_confirm_comment')	;
+				$comment = 'Ð¡ÑÑ‹Ð»ÐºÐ° Ð´Ð»Ñ Ð¾Ð¿Ð»Ð°Ñ‚Ñ‹: '.$url;//$this->config->get('sprypay_confirm_comment')	;
 			 }
    			 else{
        			$comment = 'Link for payment: '.$url;//$this->config->get('sprypay_confirm_comment')	;
