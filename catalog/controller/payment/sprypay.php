@@ -11,7 +11,7 @@ class ControllerPaymentSprypay extends Controller {
 		$this->load->model('checkout/order');
         $language = $this->language->get('code');
         $order = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-		$url='https://sprypay.ru/sppi/?spShopId='.$this->config->get('sprypay_shop').'&spShopPaymentId='.$order['order_id'].'&spAmount='.$this->currency->format($order['total'], $order['currency_code'], $order['currency_value'], false).'&spCurrency='.strtolower($order['currency_code']);//.'&spPurpose=Order №'.$order['order_id'];
+		$url='https://sprypay.ru/sppi/?spShopId='.$this->config->get('sprypay_shop').'&spShopPaymentId='.$order['order_id'].'&spAmount='.$this->currency->format($order['total'], $order['currency_code'], $order['currency_value'], false).'&spCurrency='.strtolower($order['currency_code']).'&spUserEmail='.$order['email'];
 
 		//$this->model_checkout_order->confirm($order['order_id'], $this->config->get('sprypay_order_status_id'));
         $requestPaymentForm = new SprypayRequestPaymentForm();
