@@ -116,7 +116,7 @@ class ControllerPaymentSprypay extends Controller {
 
   		if( $this->config->get('sprypay_confirm_status')=='before' )
 		{
-			 $this->model_checkout_order->update($orderId,$this->config->get('sprypay_order_status_id'), $message, false);
+			 $this->model_checkout_order->update($orderId,$this->config->get('sprypay_order_status_id'), $message, true);
 		}
 		elseif($this->config->get('sprypay_confirm_status')=='after'  )
 		{
