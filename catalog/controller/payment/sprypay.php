@@ -24,11 +24,11 @@ class ControllerPaymentSprypay extends Controller {
 		if ($language == 'ru') 
 		{
 			$requestPaymentForm->setPurpose('Заказ%20№'. $order['order_id']);
-			$url.='&spPurpose=Заказ №'. $order['order_id'];
+			$url.='&spPurpose=Заказ%20№'. $order['order_id'];
 		}
 		else 
 		{
-			$url.='&spPurpose=Order №'. $order['order_id'];
+			$url.='&spPurpose=Order%20№'. $order['order_id'];
 			$requestPaymentForm->setPurpose('Order%20№' . $order['order_id']);
 		}
 
